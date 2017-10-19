@@ -1,0 +1,23 @@
+version: '{build}'
+image: Visual Studio 2017
+
+#rdp debug
+init:
+#  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+  
+install:
+  - git submodule update --init --recursive
+#  - C:\msys64\usr\bin\pacman -Q
+  - C:\msys64\usr\bin\pacman -Syu --noconfirm
+  - C:\msys64\usr\bin\pacman -S --noconfirm mingw-w64-x86_64-nasm
+build_script:
+  - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
+  - set MSYS2_PATH_TYPE=inherit
+  - set MSYSTEM=MINGW64  
+  - C:\msys64\usr\bin\bash.exe -lc "cd /c/projects/x264/x264; CC=cl ./configure --prefix=build --disable-cli --enable-shared --disable-interlaced --enable-lto; make; make install"
+  - cd x264\build
+  - copy lib\libx264.dll.lib lib\x264.lib
+  - 7z a x264.7z *
+
+artifacts:
+  - path: x264\build\x264.7z
