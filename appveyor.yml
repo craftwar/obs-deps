@@ -1,23 +1,65 @@
 version: '{build}'
 image: Visual Studio 2017
+#environment:
+
+#set password not work....
+#  APPVEYOR_RDP_PASSWORD:
+#    secure: K6XkhLVN7PZDnWWtrTKYneDPMS7FgBFYYe1xuU2s8js=
 
 #rdp debug
 init:
-#  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-  
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 install:
+  - call script\set_variable.cmd
+  - mkdir "%pkg_prefix_win%\bin\" "%pkg_prefix_win%\include\" "%pkg_prefix_win%\lib\"
+#  - cmd
+
   - git submodule update --init --recursive
-#  - C:\msys64\usr\bin\pacman -Q
+# use same as obs to prevent problem
+  - cd ffmpeg
+  - git checkout ad56e8057d8af0201ed0cb65acc12e5889d4afcc
+  - cd %APPVEYOR_BUILD_FOLDER%\
+
   - C:\msys64\usr\bin\pacman -Syu --noconfirm
-  - C:\msys64\usr\bin\pacman -S --noconfirm mingw-w64-x86_64-nasm
-build_script:
+#  - C:\msys64\usr\bin\pacman -Su --noconfirm
+  - C:\msys64\usr\bin\pacman -S --noconfirm mingw-w64-x86_64-nasm mingw-w64-x86_64-libpng
+  - C:\msys64\usr\bin\pacman -Q
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
+  - if not exist zlib-%zlib_Version%.tar.xz curl -kLo zlib-%zlib_Version%.tar.xz http://prdownloads.sourceforge.net/libpng/zlib-%zlib_Version%.tar.xz?download -f --retry 5 -C -
+  - 7z x zlib-%zlib_Version%.tar.xz -so | 7z x -aoa -si -ttar
+# try to fix zlib.dll + zlib1.dll dep problem (change dll/lib name to zlib in makefile)
+  - copy /Y "%APPVEYOR_BUILD_FOLDER%\patch\zlib-%zlib_Version%\win32\Makefile.msc" "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\win32"
+#  - robocopy "%APPVEYOR_BUILD_FOLDER%\patch\zlib-%zlib_Version%" "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%" /e
+  - cd %APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\
+  - nmake -f %APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\win32\Makefile.msc AS=ml64 LOC="-DASMV -DASMINF -I." OBJA="inffasx64.obj gvmat64.obj inffas8664.obj"
+  - copy "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\zlib.lib" "%pkg_prefix_win%\lib\zlib.lib"
+  - copy "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\zlib.lib" "%pkg_prefix_win%\bin\zlib.lib"
+  - copy "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\zlib.exp" "%pkg_prefix_win%\lib\zlib.exp"
+  - copy "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\zlib.exp" "%pkg_prefix_win%\bin\zlib.exp"
+  - copy "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\zlib.dll" "%pkg_prefix_win%\bin\zlib.dll"
+  - copy "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\zlib.h" "%pkg_prefix_win%\include\zlib.h"
+  - copy "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\zconf.h" "%pkg_prefix_win%\include\zconf.h"
+#unistd.h. This gets erroneously included when building FFmpeg (msvc)
+  - C:\msys64\usr\bin\bash.exe -lc "sed -i '/include <unistd.h>/d' %pkg_prefix_mingw%/include/zconf.h"
+#  - curl -kLo zlib-%zlib_Version%.tar.xz http://prdownloads.sourceforge.net/libpng/zlib-%zlib_Version%.tar.xz?download -f --retry 5 -C -
+#  http://prdownloads.sourceforge.net/libpng/libpng-1.6.32.tar.xz?download
+#  - robocopy "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\" "%pkg_prefix_win%\bin\"
+#ROBOCOPY Source_folder Destination_folder [files_to_copy] [options]
+  - cd %APPVEYOR_BUILD_FOLDER%\
+
+build_script:
   - set MSYS2_PATH_TYPE=inherit
-  - set MSYSTEM=MINGW64  
-  - C:\msys64\usr\bin\bash.exe -lc "cd /c/projects/x264/x264; CC=cl ./configure --prefix=build --disable-cli --enable-shared --disable-interlaced --enable-lto; make; make install"
-  - cd x264\build
-  - copy lib\libx264.dll.lib lib\x264.lib
-  - 7z a x264.7z *
+  - set MSYSTEM=MINGW64
+
+  - C:\msys64\usr\bin\bash.exe -lc "cd /c/projects/$APPVEYOR_PROJECT_NAME/x264; CC=cl ./configure --prefix=\"$pkg_prefix_mingw\" --disable-cli --enable-shared --disable-interlaced --enable-lto; make; make install"
+  - copy "%pkg_prefix_win%\lib\libx264.dll.lib" "%pkg_prefix_win%\lib\x264.lib"
+  - copy "%pkg_prefix_win%\lib\libx264.dll.lib" "%pkg_prefix_win%\lib\libx264.lib"
+  - C:\msys64\usr\bin\bash.exe -lc "cp /c/msys64/mingw64/lib/pkgconfig/libpng*.pc $pkg_prefix_mingw/lib/pkgconfig"
+  - C:\msys64\usr\bin\bash.exe -lc "/c/projects/$APPVEYOR_PROJECT_NAME/script/ffmpeg_compile.sh"
+  - cd "C:\projects\\%APPVEYOR_PROJECT_NAME%\packages\"
+  - 7z a "C:\projects\\%APPVEYOR_PROJECT_NAME%"\VCdeps.7z "%pkg_prefix_win%"
 
 artifacts:
-  - path: x264\build\x264.7z
+  - path: VCdeps.7z
+cache:
+  - zlib-%zlib_Version%.tar.xz
