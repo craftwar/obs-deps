@@ -1,6 +1,9 @@
 version: '{build}'
 image: Visual Studio 2017
-#environment:
+#need set environment variable or it's not working in cache
+environment:
+
+  zlib_Version: 1.2.11
 
 #set password not work....
 #  APPVEYOR_RDP_PASSWORD:
@@ -13,7 +16,7 @@ install:
   - call script\set_variable.cmd
   - mkdir "%pkg_prefix_win%\bin\" "%pkg_prefix_win%\include\" "%pkg_prefix_win%\lib\"
 #  - cmd
-
+#  - if not exist ffmpeg/.git (git submodule update --init --recursive) else (git submodule update)
   - git submodule update --init --recursive
 # use same as obs to prevent problem
   - cd ffmpeg
@@ -27,6 +30,7 @@ install:
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
   - if not exist zlib-%zlib_Version%.tar.xz curl -kLo zlib-%zlib_Version%.tar.xz http://prdownloads.sourceforge.net/libpng/zlib-%zlib_Version%.tar.xz?download -f --retry 5 -C -
   - 7z x zlib-%zlib_Version%.tar.xz -so | 7z x -aoa -si -ttar
+#  - cmd
 # try to fix zlib.dll + zlib1.dll dep problem (change dll/lib name to zlib in makefile)
   - copy /Y "%APPVEYOR_BUILD_FOLDER%\patch\zlib-%zlib_Version%\win32\Makefile.msc" "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\win32"
 #  - robocopy "%APPVEYOR_BUILD_FOLDER%\patch\zlib-%zlib_Version%" "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%" /e
@@ -57,9 +61,11 @@ build_script:
   - C:\msys64\usr\bin\bash.exe -lc "cp /c/msys64/mingw64/lib/pkgconfig/libpng*.pc $pkg_prefix_mingw/lib/pkgconfig"
   - C:\msys64\usr\bin\bash.exe -lc "/c/projects/$APPVEYOR_PROJECT_NAME/script/ffmpeg_compile.sh"
   - cd "C:\projects\\%APPVEYOR_PROJECT_NAME%\packages\"
-  - 7z a "C:\projects\\%APPVEYOR_PROJECT_NAME%"\VCdeps.7z "%pkg_prefix_win%"
+  - 7z a "C:\projects\\%APPVEYOR_PROJECT_NAME%"\VCdeps.7z -mx=9 -myx=9 "%pkg_prefix_win%"
 
 artifacts:
   - path: VCdeps.7z
 cache:
-  - zlib-%zlib_Version%.tar.xz
+  - 'zlib-%zlib_Version%.tar.xz'
+#  - ffmpeg
+#  - x264
