@@ -1,6 +1,8 @@
 version: '{build}'
 image: Visual Studio 2017
 #need set environment variable or it's not working in cache
+#clone_script:
+#  - if not exist %APPVEYOR_BUILD_FOLDER% (git clone -q --branch=%APPVEYOR_REPO_BRANCH% https://github.com/craftwar/obs-deps.git)
 environment:
 
   zlib_Version: 1.2.11
@@ -16,12 +18,11 @@ install:
   - call script\set_variable.cmd
   - mkdir "%pkg_prefix_win%\bin\" "%pkg_prefix_win%\include\" "%pkg_prefix_win%\lib\"
 #  - cmd
-#  - if not exist ffmpeg/.git (git submodule update --init --recursive) else (git submodule update)
   - git submodule update --init --recursive
+#  - call script\update_submodules.cmd
 # use same as obs to prevent problem
-  - cd ffmpeg
-  - git checkout ad56e8057d8af0201ed0cb65acc12e5889d4afcc
-  - cd %APPVEYOR_BUILD_FOLDER%\
+#  - cd ffmpeg && git checkout ad56e8057d8af0201ed0cb65acc12e5889d4afcc
+#  - cd %APPVEYOR_BUILD_FOLDER%\
 
   - C:\msys64\usr\bin\pacman -Syu --noconfirm
 #  - C:\msys64\usr\bin\pacman -Su --noconfirm
@@ -37,9 +38,9 @@ install:
   - cd %APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\
   - nmake -f %APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\win32\Makefile.msc AS=ml64 LOC="-DASMV -DASMINF -I." OBJA="inffasx64.obj gvmat64.obj inffas8664.obj"
   - copy "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\zlib.lib" "%pkg_prefix_win%\lib\zlib.lib"
-  - copy "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\zlib.lib" "%pkg_prefix_win%\bin\zlib.lib"
+#  - copy "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\zlib.lib" "%pkg_prefix_win%\bin\zlib.lib"
   - copy "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\zlib.exp" "%pkg_prefix_win%\lib\zlib.exp"
-  - copy "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\zlib.exp" "%pkg_prefix_win%\bin\zlib.exp"
+#  - copy "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\zlib.exp" "%pkg_prefix_win%\bin\zlib.exp"
   - copy "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\zlib.dll" "%pkg_prefix_win%\bin\zlib.dll"
   - copy "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\zlib.h" "%pkg_prefix_win%\include\zlib.h"
   - copy "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\zconf.h" "%pkg_prefix_win%\include\zconf.h"
@@ -66,6 +67,9 @@ build_script:
 artifacts:
   - path: VCdeps.7z
 cache:
+  - C:\tools\vcpkg\installed\
   - 'zlib-%zlib_Version%.tar.xz'
-#  - ffmpeg
-#  - x264
+  - '%pkg_prefix_win% -> appveyor.yml'
+#  - '%APPVEYOR_BUILD_FOLDER%' -> appveyor.yml
+#  - ffmpeg -> appveyor.yml
+#  - x264 -> appveyor.yml
