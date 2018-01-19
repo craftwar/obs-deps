@@ -63,7 +63,7 @@ build_script:
   - C:\msys64\usr\bin\bash.exe -lc "/c/projects/$APPVEYOR_PROJECT_NAME/script/ffmpeg_compile.sh"
   - cd "C:\projects\\%APPVEYOR_PROJECT_NAME%\packages\"
   - 7z a "C:\projects\\%APPVEYOR_PROJECT_NAME%"\VCdeps.7z -mx=9 -myx=9 "%pkg_prefix_win%"
-
+test: off
 artifacts:
   - path: VCdeps.7z
 cache:
