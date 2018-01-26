@@ -19,6 +19,8 @@ install:
   - mkdir "%pkg_prefix_win%\bin\" "%pkg_prefix_win%\include\" "%pkg_prefix_win%\lib\"
 #  - cmd
   - git submodule update --init --recursive
+  - cd x264 && git checkout stable
+  - cd ..
 #  - call script\update_submodules.cmd
 # use same as obs to prevent problem
 #  - cd ffmpeg && git checkout ad56e8057d8af0201ed0cb65acc12e5889d4afcc
