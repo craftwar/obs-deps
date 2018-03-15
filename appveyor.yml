@@ -6,14 +6,11 @@ image: Visual Studio 2017
 environment:
 
   zlib_Version: 1.2.11
+  APPVEYOR_RDP_PASSWORD:
+    secure: K6XkhLVN7PZDnWWtrTKYneDPMS7FgBFYYe1xuU2s8js=
 
-#set password not work....
-#  APPVEYOR_RDP_PASSWORD:
-#    secure: K6XkhLVN7PZDnWWtrTKYneDPMS7FgBFYYe1xuU2s8js=
-
-#rdp debug
 init:
-  - ps: if ($env:rdp -eq "1") { iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1')) }
+  - ps: if ($env:rdp -eq "1") { iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1')) } #rdp debug
 install:
   - call script\set_variable.cmd
   - mkdir "%pkg_prefix_win%\bin\" "%pkg_prefix_win%\include\" "%pkg_prefix_win%\lib\"
@@ -31,6 +28,7 @@ install:
   - C:\msys64\usr\bin\pacman -S --noconfirm mingw-w64-x86_64-nasm mingw-w64-x86_64-libpng
   - C:\msys64\usr\bin\pacman -Q
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
+#  - set CL=/arch:AVX2
   - if not exist zlib-%zlib_Version%.tar.xz curl -kLo zlib-%zlib_Version%.tar.xz http://prdownloads.sourceforge.net/libpng/zlib-%zlib_Version%.tar.xz?download -f --retry 5 -C -
   - 7z x zlib-%zlib_Version%.tar.xz -so | 7z x -aoa -si -ttar
 #  - cmd
@@ -58,7 +56,7 @@ build_script:
   - set MSYS2_PATH_TYPE=inherit
   - set MSYSTEM=MINGW64
 
-  - C:\msys64\usr\bin\bash.exe -lc "cd /c/projects/$APPVEYOR_PROJECT_NAME/x264; CC=cl ./configure --prefix=\"$pkg_prefix_mingw\" --disable-cli --enable-shared --disable-interlaced --enable-lto; make; make install"
+  - C:\msys64\usr\bin\bash.exe -lc "cd /c/projects/$APPVEYOR_PROJECT_NAME/x264; CC=cl ./configure --extra-cflags='-arch:AVX2' --prefix=\"$pkg_prefix_mingw\" --disable-cli --enable-shared --disable-interlaced --enable-lto; make; make install"
   - copy "%pkg_prefix_win%\lib\libx264.dll.lib" "%pkg_prefix_win%\lib\x264.lib"
   - copy "%pkg_prefix_win%\lib\libx264.dll.lib" "%pkg_prefix_win%\lib\libx264.lib"
   - C:\msys64\usr\bin\bash.exe -lc "cp /c/msys64/mingw64/lib/pkgconfig/libpng*.pc $pkg_prefix_mingw/lib/pkgconfig"
