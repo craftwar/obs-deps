@@ -36,7 +36,8 @@ install:
   - copy /Y "%APPVEYOR_BUILD_FOLDER%\patch\zlib-%zlib_Version%\win32\Makefile.msc" "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\win32"
 #  - robocopy "%APPVEYOR_BUILD_FOLDER%\patch\zlib-%zlib_Version%" "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%" /e
   - cd %APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\
-  - nmake -f %APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\win32\Makefile.msc AS=ml64 LOC="-DASMV -DASMINF -I." OBJA="inffasx64.obj gvmat64.obj inffas8664.obj"
+#  - nmake -f %APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\win32\Makefile.msc AS=ml64 LOC="-DASMV -DASMINF -I." OBJA="inffasx64.obj gvmat64.obj inffas8664.obj"
+  - nmake -f %APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\win32\Makefile.msc
   - copy "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\zlib.lib" "%pkg_prefix_win%\lib\zlib.lib"
 #  - copy "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\zlib.lib" "%pkg_prefix_win%\bin\zlib.lib"
   - copy "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\zlib.exp" "%pkg_prefix_win%\lib\zlib.exp"
