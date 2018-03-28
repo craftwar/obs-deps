@@ -57,7 +57,7 @@ build_script:
   - set MSYS2_PATH_TYPE=inherit
   - set MSYSTEM=MINGW64
 
-  - C:\msys64\usr\bin\bash.exe -lc "cd /c/projects/$APPVEYOR_PROJECT_NAME/x264; CC=cl ./configure --extra-cflags='-arch:AVX2 -Oi' --prefix=\"$pkg_prefix_mingw\" --disable-cli --enable-shared --disable-interlaced --enable-lto; make; make install"
+  - C:\msys64\usr\bin\bash.exe -lc "cd /c/projects/$APPVEYOR_PROJECT_NAME/x264; CC=cl ./configure --extra-cflags='-MP -arch:AVX2 -Oi' --prefix=\"$pkg_prefix_mingw\" --disable-cli --enable-shared --disable-interlaced --enable-lto; make /j; make install"
   - copy "%pkg_prefix_win%\lib\libx264.dll.lib" "%pkg_prefix_win%\lib\x264.lib"
   - copy "%pkg_prefix_win%\lib\libx264.dll.lib" "%pkg_prefix_win%\lib\libx264.lib"
   - C:\msys64\usr\bin\bash.exe -lc "cp /c/msys64/mingw64/lib/pkgconfig/libpng*.pc $pkg_prefix_mingw/lib/pkgconfig"
