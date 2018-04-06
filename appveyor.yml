@@ -5,7 +5,6 @@ image: Visual Studio 2017
 #  - if not exist %APPVEYOR_BUILD_FOLDER% (git clone -q --branch=%APPVEYOR_REPO_BRANCH% https://github.com/craftwar/obs-deps.git)
 environment:
 
-  zlib_Version: 1.2.11
   APPVEYOR_RDP_PASSWORD:
     secure: K6XkhLVN7PZDnWWtrTKYneDPMS7FgBFYYe1xuU2s8js=
 
@@ -13,7 +12,7 @@ init:
   - ps: if ($env:rdp -eq "1") { iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1')) } #rdp debug
 install:
   - call script\set_variable.cmd
-  - mkdir "%pkg_prefix_win%\bin\" "%pkg_prefix_win%\include\" "%pkg_prefix_win%\lib\"
+  - mkdir "%pkg_prefix_win%\bin\" "%pkg_prefix_win%\include\" "%pkg_prefix_win%\lib\pkgconfig"
 #  - cmd
   - git submodule update --init --recursive
   - cd x264 && git checkout stable
@@ -29,28 +28,20 @@ install:
   - C:\msys64\usr\bin\pacman -Q
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
 #  - set CL=/arch:AVX2
-  - if not exist zlib-%zlib_Version%.tar.xz curl -kLo zlib-%zlib_Version%.tar.xz http://prdownloads.sourceforge.net/libpng/zlib-%zlib_Version%.tar.xz?download -f --retry 5 -C -
-  - 7z x zlib-%zlib_Version%.tar.xz -so | 7z x -aoa -si -ttar
+  - cd zlib
+  - cmake -E env CFLAGS="-MP -Oi -arch:AVX2" cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX="%pkg_prefix_win%" -DWITH_NATIVE_INSTRUCTIONS=true -DZLIB_COMPAT=true -DZLIB_ENABLE_TESTS=false
+  - call msbuild /m /p:Configuration=Release zlib.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - cd ..
 #  - cmd
-# try to fix zlib.dll + zlib1.dll dep problem (change dll/lib name to zlib in makefile)
-  - copy /Y "%APPVEYOR_BUILD_FOLDER%\patch\zlib-%zlib_Version%\win32\Makefile.msc" "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\win32"
-#  - robocopy "%APPVEYOR_BUILD_FOLDER%\patch\zlib-%zlib_Version%" "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%" /e
-  - cd %APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\
-#  - nmake -f %APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\win32\Makefile.msc AS=ml64 LOC="-DASMV -DASMINF -I." OBJA="inffasx64.obj gvmat64.obj inffas8664.obj"
-  - nmake -f %APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\win32\Makefile.msc
-  - copy "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\zlib.lib" "%pkg_prefix_win%\lib\zlib.lib"
-#  - copy "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\zlib.lib" "%pkg_prefix_win%\bin\zlib.lib"
-  - copy "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\zlib.exp" "%pkg_prefix_win%\lib\zlib.exp"
-#  - copy "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\zlib.exp" "%pkg_prefix_win%\bin\zlib.exp"
-  - copy "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\zlib.dll" "%pkg_prefix_win%\bin\zlib.dll"
-  - copy "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\zlib.h" "%pkg_prefix_win%\include\zlib.h"
-  - copy "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\zconf.h" "%pkg_prefix_win%\include\zconf.h"
+  - copy "%APPVEYOR_BUILD_FOLDER%\zlib\Release\zlib.lib" "%pkg_prefix_win%\lib\zlib.lib"
+  - copy "%APPVEYOR_BUILD_FOLDER%\zlib\Release\zlib.exp" "%pkg_prefix_win%\lib\zlib.exp"
+  - copy "%APPVEYOR_BUILD_FOLDER%\zlib\Release\zlib.dll" "%pkg_prefix_win%\bin\zlib.dll"
+  - copy "%APPVEYOR_BUILD_FOLDER%\zlib\zlib.h" "%pkg_prefix_win%\include\zlib.h"
+  - copy "%APPVEYOR_BUILD_FOLDER%\zlib\zconf.h" "%pkg_prefix_win%\include\zconf.h"
+  - copy "%APPVEYOR_BUILD_FOLDER%\zlib\zlib.pc" "%pkg_prefix_win%\lib\pkgconfig\zlib.pc"
+
 #unistd.h. This gets erroneously included when building FFmpeg (msvc)
   - C:\msys64\usr\bin\bash.exe -lc "sed -i '/include <unistd.h>/d' %pkg_prefix_mingw%/include/zconf.h"
-#  - curl -kLo zlib-%zlib_Version%.tar.xz http://prdownloads.sourceforge.net/libpng/zlib-%zlib_Version%.tar.xz?download -f --retry 5 -C -
-#  http://prdownloads.sourceforge.net/libpng/libpng-1.6.32.tar.xz?download
-#  - robocopy "%APPVEYOR_BUILD_FOLDER%\zlib-%zlib_Version%\" "%pkg_prefix_win%\bin\"
-#ROBOCOPY Source_folder Destination_folder [files_to_copy] [options]
   - cd %APPVEYOR_BUILD_FOLDER%\
 
 build_script:
@@ -69,7 +60,6 @@ artifacts:
   - path: VCdeps.7z
 cache:
   - C:\tools\vcpkg\installed\
-  - 'zlib-%zlib_Version%.tar.xz'
   - '%pkg_prefix_win% -> appveyor.yml'
 #  - '%APPVEYOR_BUILD_FOLDER%' -> appveyor.yml
 #  - ffmpeg -> appveyor.yml
