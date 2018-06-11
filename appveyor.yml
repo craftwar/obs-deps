@@ -1,4 +1,5 @@
 version: '{build}'
+skip_tags: true
 image: Visual Studio 2017
 #need set environment variable or it's not working in cache
 #clone_script:
@@ -16,6 +17,8 @@ install:
   - mkdir "%pkg_prefix_win%\bin\" "%pkg_prefix_win%\include\" "%pkg_prefix_win%\lib\pkgconfig"
 #  - cmd
   - git submodule update --init --recursive --remote
+  - ps: |
+      $Env:release = Get-Date -UFormat "%Y-%m-%d / %A / %Z"
 #  - call script\update_submodules.cmd
 # use same as obs to prevent problem
 #  - cd ffmpeg && git checkout ad56e8057d8af0201ed0cb65acc12e5889d4afcc
@@ -75,3 +78,13 @@ cache:
 #  - '%APPVEYOR_BUILD_FOLDER%' -> appveyor.yml
 #  - ffmpeg -> appveyor.yml
 #  - x264 -> appveyor.yml
+deploy:
+  - provider: GitHub
+    tag: git
+    release: $(release)
+    description: Release title = build time
+    auth_token:
+      secure: KxeGOEgx0+XWdjLWDsyhC+B/w3m8zpvtVY/e+90lCLZgd/2VSuraPZDxdIPB5rfY
+    force_update: true
+    on:
+      branch: master
