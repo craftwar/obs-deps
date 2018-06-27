@@ -32,7 +32,7 @@ install:
 #  - set CL=/arch:AVX2
   - cd zlib
 # LDFLAGS="-LTCG"  /LTCG is implied with /GL.
-  - cmake -E env CFLAGS="-MP -Oi -arch:AVX2 -GL" LDFLAGS="-LTCG" cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX="%pkg_prefix_win%" -DWITH_NATIVE_INSTRUCTIONS=true -DZLIB_COMPAT=true -DZLIB_ENABLE_TESTS=false
+  - cmake -E env CFLAGS="-MP -Oi -arch:AVX2 -Gw -Gy -GL" LDFLAGS="-LTCG" cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX="%pkg_prefix_win%" -DWITH_NATIVE_INSTRUCTIONS=true -DZLIB_COMPAT=true -DZLIB_ENABLE_TESTS=false
   - call msbuild /m /p:Configuration=Release zlib.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
   - cd ..
 #  - cmd
@@ -50,7 +50,7 @@ install:
   - set CPPFLAGS=-I%ZLIBINC%
   - set LDFLAGS=-L%ZLIBLIB%
   - set LD_LIBRARY_PATH=%ZLIBLIB%:%LD_LIBRARY_PATH%
-  - cmake -E env CFLAGS="-MP -Oi -arch:AVX2 -GL"  CXXFLAGS="-MP -Oi -arch:AVX2 -GL" LDFLAGS="-LTCG" PNG_INTEL_SSE="yes" cmake . -G "Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=%pkg_prefix_win% -DPNG_TESTS=off -DPNG_SHARED=off
+  - cmake -E env CFLAGS="-MP -Oi -arch:AVX2 -Gw -Gy -GL" CXXFLAGS="-MP -Oi -arch:AVX2 -Gw -Gy -GL" LDFLAGS="-LTCG" PNG_INTEL_SSE="yes" cmake . -G "Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=%pkg_prefix_win% -DPNG_TESTS=off -DPNG_SHARED=off
 #  - cmd
   - call msbuild /m /p:Configuration=Release INSTALL.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
   - cd ..
@@ -63,7 +63,7 @@ build_script:
   - set MSYS2_PATH_TYPE=inherit
   - set MSYSTEM=MINGW64
 
-  - C:\msys64\usr\bin\bash.exe -lc "cd /c/projects/$APPVEYOR_PROJECT_NAME/x264; CC=cl ./configure --extra-cflags='-MP -Oi -arch:AVX2' --prefix=\"$pkg_prefix_mingw\" --disable-cli --enable-shared --disable-interlaced --enable-lto; make /j; make install"
+  - C:\msys64\usr\bin\bash.exe -lc "cd /c/projects/$APPVEYOR_PROJECT_NAME/x264; CC=cl ./configure --extra-cflags='-MP -Oi -arch:AVX2 -Gw -Gy -GL' --extra-ldflags='-LTCG' --prefix=\"$pkg_prefix_mingw\" --disable-cli --enable-shared --disable-interlaced --enable-lto; make /j; make install"
   - copy "%pkg_prefix_win%\lib\libx264.dll.lib" "%pkg_prefix_win%\lib\x264.lib"
   - copy "%pkg_prefix_win%\lib\libx264.dll.lib" "%pkg_prefix_win%\lib\libx264.lib"
 #  - C:\msys64\usr\bin\bash.exe -lc "cp /c/msys64/mingw64/lib/pkgconfig/libpng*.pc $pkg_prefix_mingw/lib/pkgconfig"
