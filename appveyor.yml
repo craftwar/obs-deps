@@ -32,7 +32,7 @@ install:
 #  - set CL=/arch:AVX2
   - cd zlib
 # LDFLAGS="-LTCG"  /LTCG is implied with /GL.
-  - cmake -E env CFLAGS="-MP -Oi -arch:AVX2 -GL" cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX="%pkg_prefix_win%" -DWITH_NATIVE_INSTRUCTIONS=true -DZLIB_COMPAT=true -DZLIB_ENABLE_TESTS=false
+  - cmake -E env CFLAGS="-MP -Oi -arch:AVX2 -GL" LDFLAGS="-LTCG" cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX="%pkg_prefix_win%" -DWITH_NATIVE_INSTRUCTIONS=true -DZLIB_COMPAT=true -DZLIB_ENABLE_TESTS=false
   - call msbuild /m /p:Configuration=Release zlib.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
   - cd ..
 #  - cmd
@@ -50,7 +50,7 @@ install:
   - set CPPFLAGS=-I%ZLIBINC%
   - set LDFLAGS=-L%ZLIBLIB%
   - set LD_LIBRARY_PATH=%ZLIBLIB%:%LD_LIBRARY_PATH%
-  - cmake -E env CFLAGS="-MP -Oi -arch:AVX2 -GL"  CXXFLAGS="-MP -Oi -arch:AVX2 -GL" PNG_INTEL_SSE="yes" cmake . -G "Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=%pkg_prefix_win% -DPNG_TESTS=off -DPNG_SHARED=off
+  - cmake -E env CFLAGS="-MP -Oi -arch:AVX2 -GL"  CXXFLAGS="-MP -Oi -arch:AVX2 -GL" LDFLAGS="-LTCG" PNG_INTEL_SSE="yes" cmake . -G "Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=%pkg_prefix_win% -DPNG_TESTS=off -DPNG_SHARED=off
 #  - cmd
   - call msbuild /m /p:Configuration=Release INSTALL.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
   - cd ..
