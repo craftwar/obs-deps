@@ -7,7 +7,7 @@ image: Visual Studio 2017
 
 environment:
   matrix:
-    - favor_arch: blend
+    - favor_arch: INTEL64
     - favor_arch: AMD64
 
 #  APPVEYOR_RDP_PASSWORD:
