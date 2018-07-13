@@ -7,9 +7,9 @@ PKG_CONFIG_PATH="$pkg_prefix_mingw/lib/pkgconfig" LDFLAGS="-L/home$pkg_prefix_mi
 	--extra-ldflags="-LTCG -LIBPATH:$pkg_prefix_win\lib" \
 	--toolchain=msvc --enable-version3 --enable-gpl --disable-programs --disable-doc --arch=x86_64 --host-os=win64 --target-os=win64 --cpu=i686\
 	--enable-libx264 \
+	$enable_nvenc \
 	--enable-zlib --enable-encoder=png \
 	--disable-xlib \
 	--disable-postproc --disable-debug
 date
-make -j
-make install
+make -j install
