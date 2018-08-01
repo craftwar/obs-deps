@@ -8,9 +8,7 @@ image: Visual Studio 2017
 environment:
   matrix:
     - favor_arch: INTEL64
-      enable_nvenc: --enable-nvenc
     - favor_arch: AMD64
-      enable_nvenc: --disable-nvenc
 
 #  APPVEYOR_RDP_PASSWORD:
 #    secure: K6XkhLVN7PZDnWWtrTKYneDPMS7FgBFYYe1xuU2s8js=
