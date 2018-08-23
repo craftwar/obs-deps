@@ -1,6 +1,6 @@
 cd /c/projects/$APPVEYOR_PROJECT_NAME/ffmpeg
 date
-PKG_CONFIG_PATH="$pkg_prefix_mingw/lib/pkgconfig" LDFLAGS="-L/home$pkg_prefix_mingw/lib" CPPFLAGS="-I$pkg_prefix_mingw/include" \
+PKG_CONFIG_PATH="$pkg_prefix_mingw/lib/pkgconfig" LDFLAGS="-L/home$pkg_prefix_mingw/lib" CPPFLAGS="-I$pkg_prefix_mingw/include" ASFLAGS="-O5" \
 	./configure --prefix=$pkg_prefix_mingw --enable-shared \
 	--extra-cflags="-O2 -MP -Gw -Gy -GS- -favor:$favor_arch -I$pkg_prefix_win\include" \
 	--extra-cxxflags="-O2 -MP -arch:AVX2 -Gw -Gy -GL -GS- -favor:$favor_arch -I$pkg_prefix_win\include" \
