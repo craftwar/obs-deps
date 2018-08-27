@@ -36,6 +36,7 @@ install:
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
   # disable /GS (Buffer Security Check) to get better performance
   - set cl_options=-MP -Oi -arch:AVX2 -Gw -Gy -GL -GS- -favor:%favor_arch%
+  - set _LINK_=-LTCG
 #  - set CL=/arch:AVX2
   - cd zlib
 # LDFLAGS="-LTCG"  /LTCG is implied with /GL.
