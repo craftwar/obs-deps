@@ -60,8 +60,8 @@ install:
   - set ZLIBLIB=%pkg_prefix_win%\lib
   - set ZLIBINC=%pkg_prefix_win%\include
   - set CPPFLAGS=-I%ZLIBINC%
-  - set LDFLAGS=-L%ZLIBLIB% -LTCG
-  - set LD_LIBRARY_PATH=%ZLIBLIB%:%LD_LIBRARY_PATH%
+  - set LDFLAGS=-LIBPATH:%ZLIBLIB% -LTCG
+#  - set LD_LIBRARY_PATH=%ZLIBLIB%:%LD_LIBRARY_PATH%
   - cmake -E env CFLAGS="%cl_options%" CXXFLAGS="%cl_options%" PNG_INTEL_SSE="yes" cmake . -G "Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=%pkg_prefix_win% -DPNG_TESTS=off -DPNG_SHARED=off
 #  - cmd
   - call msbuild /m /p:Configuration=Release INSTALL.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
