@@ -36,6 +36,7 @@ install:
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
   # disable /GS (Buffer Security Check) to get better performance
   - set cl_options=-MP -Oi -arch:AVX2 -Gw -Gy -GL -GS- -favor:%favor_arch%
+  #only works outside development environment
   - set _LINK_=-LTCG
   - set CMAKE_EXE_LINKER_FLAGS=/LTCG
   - set CMAKE_MODULE_LINKER_FLAGS=/LTCG
