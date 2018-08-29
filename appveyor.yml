@@ -38,10 +38,6 @@ install:
   - set cl_options=-MP -Oi -arch:AVX2 -Gw -Gy -GL -GS- -favor:%favor_arch%
   #only works outside development environment
   - set _LINK_=-LTCG
-  - set CMAKE_EXE_LINKER_FLAGS=/LTCG
-  - set CMAKE_MODULE_LINKER_FLAGS=/LTCG
-  - set CMAKE_SHARED_LINKER_FLAGS=/LTCG
-  - set CMAKE_STATIC_LINKER_FLAGS=/LTCG
 #  - set CL=/arch:AVX2
 # LDFLAGS="-LTCG"  /LTCG is implied with /GL.
   - cd zlib
@@ -58,12 +54,15 @@ install:
 
   - cd libpng
   - C:\msys64\usr\bin\bash.exe -lc "cd /c/projects/$APPVEYOR_PROJECT_NAME/libpng; git checkout `git tag -l 'v1.[0-9].[0-9][0-9]' | tail -1`"
+  # remove cmake version, try to make linker variable work (but fail)
+#  - C:\msys64\usr\bin\bash.exe -lc "sed -i '/cmake_minimum_required/d;/cmake_policy(VERSION/d' /c/projects/$APPVEYOR_PROJECT_NAME/libpng/CMakeLists.txt"
+#  - C:\msys64\usr\bin\sed.exe -i '/cmake_minimum_required/d;/cmake_policy(VERSION/d' CMakeLists.txt
   - set ZLIBLIB=%pkg_prefix_win%\lib
   - set ZLIBINC=%pkg_prefix_win%\include
   - set CPPFLAGS=-I%ZLIBINC%
   - set LDFLAGS=-LIBPATH:%ZLIBLIB% -LTCG
 #  - set LD_LIBRARY_PATH=%ZLIBLIB%:%LD_LIBRARY_PATH%
-  - cmake -E env CFLAGS="%cl_options%" CXXFLAGS="%cl_options%" PNG_INTEL_SSE="yes" cmake . -G "Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=%pkg_prefix_win% -DPNG_TESTS=off -DPNG_SHARED=off
+  - cmake -E env CFLAGS="%cl_options%" CXXFLAGS="%cl_options%" PNG_INTEL_SSE="yes" cmake . -G "Visual Studio 15 2017 Win64" -DCMAKE_STATIC_LINKER_FLAGS_INIT=/LTCG -DCMAKE_INSTALL_PREFIX=%pkg_prefix_win% -DPNG_TESTS=off -DPNG_SHARED=off
 #  - cmd
   - call msbuild /m /p:Configuration=Release INSTALL.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
   - cd ..
