@@ -11,5 +11,10 @@ PKG_CONFIG_PATH="$pkg_prefix_mingw/lib/pkgconfig" ASFLAGS="-O5" \
 	--enable-zlib --enable-encoder=png \
 	--disable-programs --disable-doc \
 	--disable-xlib \
-	--disable-postproc --disable-debug
+	--disable-postproc --disable-debug $ffmpeg_extra_options
 make -j install
+#patch configure doesn't work
+#sed -i "s/if ! disabled_any asm mmx/if ! disabled_any asm/" configure
+# disable these will disable AVX and later instrunctions (mmx only?)
+#	--disable-mmx --disable-mmxext \
+#	--disable-sse --disable-sse2 --disable-sse3 --disable-ssse3 --disable-sse4 --disable-sse42 \

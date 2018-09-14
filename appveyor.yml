@@ -8,7 +8,9 @@ image: Visual Studio 2017
 environment:
   matrix:
     - favor_arch: INTEL64
+      ffmpeg_extra_options: --disable-fma4 #no FMA4 on Intel
     - favor_arch: AMD64
+      ffmpeg_extra_options: --disable-runtime-cpudetect --disable-avx512 --disable-fma4 #no AVX512 on AMD, no FMA4 on newer AMD CPU?
 
 #  APPVEYOR_RDP_PASSWORD:
 #    secure: K6XkhLVN7PZDnWWtrTKYneDPMS7FgBFYYe1xuU2s8js=
@@ -21,8 +23,6 @@ install:
   - call script\set_variable.cmd
   - mkdir "%pkg_prefix_win%\bin\" "%pkg_prefix_win%\include\" "%pkg_prefix_win%\lib\pkgconfig"
   - git submodule update --init --recursive --remote
-  - ps: |
-      $Env:release = Get-Date -UFormat "%Y-%m-%d / %A / %Z"
 #  - call script\update_submodules.cmd
 # use same as obs to prevent problem
 #  - cd ffmpeg && git checkout ad56e8057d8af0201ed0cb65acc12e5889d4afcc
@@ -88,6 +88,7 @@ build_script:
 test: off
 before_deploy:
   - ps: Push-AppveyorArtifact "VCdeps.7z" -FileName "VCdeps-${Env:favor_arch}.7z"
+  - ps: $Env:release = Get-Date -UFormat "%Y-%m-%d / %A / %Z"
 cache:
 #  - C:\tools\vcpkg\installed\
 #  - '%pkg_prefix_win% -> appveyor.yml'
