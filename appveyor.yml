@@ -81,7 +81,7 @@ build_script:
   - copy "%pkg_prefix_win%\lib\libx264.dll.lib" "%pkg_prefix_win%\lib\libx264.lib"
 #  - C:\msys64\usr\bin\bash.exe -lc "cp /c/msys64/mingw64/lib/pkgconfig/libpng*.pc $pkg_prefix_mingw/lib/pkgconfig"
   - C:\msys64\usr\bin\bash.exe -lc "make -C /c/projects/$APPVEYOR_PROJECT_NAME/ffnvcodec install PREFIX=$pkg_prefix_mingw"
-  - C:\msys64\usr\bin\bash.exe -lc "/c/projects/$APPVEYOR_PROJECT_NAME/script/ffmpeg_patch.sh"
+  - C:\msys64\usr\bin\bash.exe -lc "/c/projects/$APPVEYOR_PROJECT_NAME/script/ffmpeg_patch_pl.sh"
   - C:\msys64\usr\bin\bash.exe -lc "/c/projects/$APPVEYOR_PROJECT_NAME/script/ffmpeg_compile.sh"
   - cd "C:\projects\\%APPVEYOR_PROJECT_NAME%\packages\"
   - 7z a "C:\projects\\%APPVEYOR_PROJECT_NAME%"\VCdeps.7z -mx=9 -myx=9 "%pkg_prefix_win%"
