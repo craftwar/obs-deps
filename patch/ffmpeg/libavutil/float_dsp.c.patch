@@ -1,0 +1,26 @@
+144c144
+<     if (ARCH_AARCH64)
+---
+>     #if (ARCH_AARCH64)
+146c146,147
+<     if (ARCH_ARM)
+---
+> 	#endif
+>     #if (ARCH_ARM)
+148c149,150
+<     if (ARCH_PPC)
+---
+> 	#endif
+>     #if (ARCH_PPC)
+150c152,153
+<     if (ARCH_X86)
+---
+> 	#endif
+>     #if (ARCH_X86)
+152c155,156
+<     if (ARCH_MIPS)
+---
+> 	#endif
+>     #if (ARCH_MIPS)
+153a158
+> 	#endif

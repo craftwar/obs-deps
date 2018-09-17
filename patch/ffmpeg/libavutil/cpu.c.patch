@@ -1,0 +1,21 @@
+311c311
+<     if (ARCH_AARCH64)
+---
+>     #if (ARCH_AARCH64)
+313c313,314
+<     if (ARCH_ARM)
+---
+> 	#endif
+>     #if (ARCH_ARM)
+315c316,317
+<     if (ARCH_PPC)
+---
+> 	#endif
+>     #if (ARCH_PPC)
+317c319,320
+<     if (ARCH_X86)
+---
+> 	#endif
+>     #if (ARCH_X86)
+318a322
+> 	#endif
