@@ -1,19 +1,24 @@
-[submodule "x264"]
-	path = x264
-	url = http://git.videolan.org/git/x264.git
-	branch = stable
-[submodule "ffmpeg"]
-	path = ffmpeg
-	url = https://git.ffmpeg.org/ffmpeg.git
-	branch = master
 [submodule "zlib"]
 	path = zlib
 	url = https://github.com/Dead2/zlib-ng.git
 	branch = develop
+	ignore = all
 [submodule "libpng"]
 	path = libpng
 	url = https://github.com/glennrp/libpng.git
 	branch = master
+	ignore = all
+[submodule "x264"]
+	path = x264
+	url = http://git.videolan.org/git/x264.git
+	branch = stable
+	ignore = all
+[submodule "ffmpeg"]
+	path = ffmpeg
+	url = https://git.ffmpeg.org/ffmpeg.git
+	branch = master
+	ignore = all
 [submodule "ffnvcodec"]
 	path = ffnvcodec
 	url = https://git.videolan.org/git/ffmpeg/nv-codec-headers.git
+	ignore = all
