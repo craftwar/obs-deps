@@ -10,7 +10,7 @@ PKG_CONFIG_PATH="$pkg_prefix_mingw/lib/pkgconfig" ASFLAGS="-O5" \
 	--enable-libx264 \
 	--enable-zlib --enable-encoder=png \
 	--disable-programs --disable-doc \
-	--disable-xlib \
+	--disable-xlib --disable-dxva2\
 	--disable-postproc --disable-debug $ffmpeg_extra_options
 make -j install
 #patch configure doesn't work
