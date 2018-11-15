@@ -27,6 +27,7 @@ install:
   - call script\set_variable.cmd
   - mkdir "%pkg_prefix_win%\bin\" "%pkg_prefix_win%\include\" "%pkg_prefix_win%\lib\pkgconfig"
   - git submodule update --init --recursive --remote
+  - C:\msys64\usr\bin\bash.exe -lc "cd /c/projects/$APPVEYOR_PROJECT_NAME/ffmpeg; git checkout `git tag --list 'n*' | sed -r '/.+-dev/d' | tail -1`"
 #  - call script\update_submodules.cmd
 # use same as obs to prevent problem
 #  - cd ffmpeg && git checkout ad56e8057d8af0201ed0cb65acc12e5889d4afcc
