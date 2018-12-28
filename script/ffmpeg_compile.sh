@@ -5,12 +5,13 @@ PKG_CONFIG_PATH="$pkg_prefix_mingw/lib/pkgconfig" ASFLAGS="-O5" \
 	--extra-cflags="-O2 -MP -arch:$vc_inc_arch -Gw -Gy -GS- -favor:$favor_arch -Zc:__cplusplus -Zc:inline -I$pkg_prefix_win\include" \
 	--extra-cxxflags="-O2 -MP -arch:$vc_inc_arch -Gw -Gy -GL -GS- -favor:$favor_arch -Zc:__cplusplus -I$pkg_prefix_win\include" \
 	--extra-ldflags="-LTCG -LIBPATH:$pkg_prefix_win\lib" \
-	--toolchain=msvc --enable-gpl --arch=x86_64 --host-os=win64 --target-os=win64 --cpu=i686\
+	--toolchain=msvc --enable-gpl --arch=x86_64 --host-os=win64 --target-os=win64 --cpu=i686 \
 	--disable-amd3dnow --disable-amd3dnowext --disable-xop \
 	--enable-libx264 \
 	--enable-zlib --enable-encoder=png \
+	--disable-muxer=mp3 \
 	--disable-programs --disable-doc \
-	--disable-xlib --disable-dxva2\
+	--disable-xlib --disable-dxva2 \
 	--disable-postproc --disable-debug $ffmpeg_extra_options
 make -j install
 #patch configure doesn't work
