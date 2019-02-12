@@ -47,7 +47,7 @@ install:
 #  - set CL=/arch:AVX2
 # LDFLAGS="-LTCG"  /LTCG is implied with /GL.
   - cd zlib
-  - cmake -E env CFLAGS="%cl_options%" CXXFLAGS="%cl_options%" LDFLAGS="-LTCG" cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX="%pkg_prefix_win%" -DWITH_NATIVE_INSTRUCTIONS=true -DZLIB_COMPAT=true -DZLIB_ENABLE_TESTS=false
+  - cmake -E env CFLAGS="%cl_options%" CXXFLAGS="%cl_options%" LDFLAGS="-LTCG" cmake . -G "Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX="%pkg_prefix_win%" -DWITH_NATIVE_INSTRUCTIONS=true -DZLIB_COMPAT=true -DZLIB_ENABLE_TESTS=false
   - call msbuild /m /p:Configuration=Release zlib.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
   - cd ..
 #  - cmd
