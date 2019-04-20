@@ -13,7 +13,10 @@ PKG_CONFIG_PATH="$pkg_prefix_mingw/lib/pkgconfig" ASFLAGS="-O5" \
 	--disable-programs --disable-doc \
 	--disable-xlib --disable-dxva2 \
 	--disable-postproc --disable-debug $ffmpeg_extra_options
-make -j install
+make install
+# -j make build randomly fail (VS2017 15.9.11, ffmpeg 4.1.3, 2019/4/20)
+#make -j install
+
 #patch configure doesn't work
 #sed -i "s/if ! disabled_any asm mmx/if ! disabled_any asm/" configure
 # disable these will disable AVX and later instrunctions (mmx only?)
