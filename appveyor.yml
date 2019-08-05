@@ -12,10 +12,12 @@ environment:
       ffmpeg_extra_options: --disable-fma4 #no FMA4 on Intel
     - favor_arch: AMD64
       ffmpeg_extra_options: --disable-runtime-cpudetect --disable-avx512 --disable-fma4 #no AVX512 on AMD, no FMA4 on newer AMD CPU?
-    - favor_arch: blend
+    - favor_arch: INTEL64
       ffmpeg_extra_options: --disable-fma4
       vc_inc_arch: SSE2
-
+    - favor_arch: AMD64
+      ffmpeg_extra_options: --disable-avx512 --disable-fma4
+      vc_inc_arch: SSE2
 #  APPVEYOR_RDP_PASSWORD:
 #    secure: K6XkhLVN7PZDnWWtrTKYneDPMS7FgBFYYe1xuU2s8js=
 matrix:
@@ -25,7 +27,8 @@ init:
   - ps: if (0) { iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1')) } #rdp debug
 install:
 #  - mklink /d C:\msys64 C:\tools\msys64
-#  - choco install msys2 --params="'/InstallDir:C:\msys64 /NoUpdate'"
+# TODO, remove this when appveyor is ready
+  - choco install msys2 --params="'/InstallDir:C:\msys64 /NoUpdate'"
 #  - ps: Restart-Computer
 #  - ps: Start-Sleep -s 5  
 #  - cmd
@@ -106,7 +109,7 @@ build_script:
   - cd ..
 test: off
 before_deploy:
-  - ps: Push-AppveyorArtifact "VCdeps.7z" -FileName "VCdeps-${Env:favor_arch}.7z"
+  - ps: Push-AppveyorArtifact "VCdeps.7z" -FileName "VCdeps-${Env:favor_arch}-${Env:vc_inc_arch}.7z"
   - ps: $Env:release = Get-Date -UFormat "%Y-%m-%d / %A / %Z"
 cache:
 #  - C:\tools\vcpkg\installed\
