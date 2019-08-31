@@ -61,6 +61,8 @@ install:
 #  - set CL=/arch:AVX2
 # LDFLAGS="-LTCG"  /LTCG is implied with /GL.
   - cd zlib
+# change dll name from zlib1.dll to zlib.dll (same as Jim's OBS)
+  - C:\msys64\usr\bin\sed.exe -i 's/1.dll/.dll/' CMakeLists.txt
   - cmake -E env CFLAGS="%cl_options%" CXXFLAGS="%cl_options%" LDFLAGS="-LTCG" cmake . -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="%pkg_prefix_win%" -DWITH_NATIVE_INSTRUCTIONS=true -DZLIB_COMPAT=true -DBUILD_SHARED_LIBS=true -DZLIB_ENABLE_TESTS=false
   - call msbuild /m /p:Configuration=Release zlib.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 #  - cmd
