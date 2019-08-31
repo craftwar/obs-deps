@@ -28,7 +28,7 @@ init:
 install:
 #  - mklink /d C:\msys64 C:\tools\msys64
 # TODO, remove this when appveyor is ready
-  - choco install msys2 --params="'/InstallDir:C:\msys64 /NoUpdate'"
+#  - choco install msys2 --params="'/InstallDir:C:\msys64 /NoUpdate'"
 #  - ps: Restart-Computer
 #  - ps: Start-Sleep -s 5  
 #  - cmd
