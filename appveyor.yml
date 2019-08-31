@@ -62,15 +62,14 @@ install:
 # LDFLAGS="-LTCG"  /LTCG is implied with /GL.
   - cd zlib
   - cmake -E env CFLAGS="%cl_options%" CXXFLAGS="%cl_options%" LDFLAGS="-LTCG" cmake . -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="%pkg_prefix_win%" -DWITH_NATIVE_INSTRUCTIONS=true -DZLIB_COMPAT=true -DBUILD_SHARED_LIBS=true -DZLIB_ENABLE_TESTS=false
-  - call msbuild /m /p:Configuration=Release INSTALL.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - call msbuild /m /p:Configuration=Release zlib.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 #  - cmd
-#  - copy "%APPVEYOR_BUILD_FOLDER%\zlib\Release\zlib.lib" "%pkg_prefix_win%\lib\zlib.lib"
-#  - copy "%APPVEYOR_BUILD_FOLDER%\zlib\Release\zlib.exp" "%pkg_prefix_win%\lib\zlib.exp"
-#  - copy "%APPVEYOR_BUILD_FOLDER%\zlib\Release\zlib.dll" "%pkg_prefix_win%\bin\zlib.dll"
-#  - cmd
-#  - copy "%APPVEYOR_BUILD_FOLDER%\zlib\zlib.h" "%pkg_prefix_win%\include\zlib.h"
-#  - copy "%APPVEYOR_BUILD_FOLDER%\zlib\zconf.h" "%pkg_prefix_win%\include\zconf.h"
-#  - copy "%APPVEYOR_BUILD_FOLDER%\zlib\zlib.pc" "%pkg_prefix_win%\lib\pkgconfig\zlib.pc"
+  - copy "%APPVEYOR_BUILD_FOLDER%\zlib\Release\zlib.lib" "%pkg_prefix_win%\lib\zlib.lib"
+  - copy "%APPVEYOR_BUILD_FOLDER%\zlib\Release\zlib.exp" "%pkg_prefix_win%\lib\zlib.exp"
+  - copy "%APPVEYOR_BUILD_FOLDER%\zlib\Release\zlib.dll" "%pkg_prefix_win%\bin\zlib.dll"
+  - copy "%APPVEYOR_BUILD_FOLDER%\zlib\zlib.h" "%pkg_prefix_win%\include\zlib.h"
+  - copy "%APPVEYOR_BUILD_FOLDER%\zlib\zconf.h" "%pkg_prefix_win%\include\zconf.h"
+  - copy "%APPVEYOR_BUILD_FOLDER%\zlib\zlib.pc" "%pkg_prefix_win%\lib\pkgconfig\zlib.pc"
   - cd "%APPVEYOR_BUILD_FOLDER%\libpng"
   - C:\msys64\usr\bin\bash.exe -lc "cd /c/projects/$APPVEYOR_PROJECT_NAME/libpng; git checkout `git tag -l 'v1.[0-9].[0-9][0-9]' | tail -1`"
   # remove cmake version, try to make linker variable work (but fail)
