@@ -55,7 +55,7 @@ install:
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
   # disable /GS (Buffer Security Check) to get better performance
   # -Zc:inline is disabled when -GL is on
-  - set cl_options=-MP -Oi -arch:%vc_inc_arch% -Gw -Gy -GL -GS- -favor:%favor_arch% -Zc:__cplusplus
+  - set cl_options=-MP -Oi -arch:%vc_inc_arch% -Gw -Gy -GL -GS- -Qspectre- -favor:%favor_arch% -Zc:__cplusplus
   #only works outside development environment
   - set _LINK_=-LTCG
 #  - set CL=/arch:AVX2
