@@ -9,10 +9,12 @@ environment:
   vc_inc_arch: AVX2
   matrix:
     - favor_arch: INTEL64
+      cl_cpu_options: -QIntel-jcc-erratum
       ffmpeg_extra_options: --disable-fma4 #no FMA4 on Intel
     - favor_arch: AMD64
       ffmpeg_extra_options: --disable-runtime-cpudetect --disable-avx512 --disable-fma4 #no AVX512 on AMD, no FMA4 on newer AMD CPU?
     - favor_arch: INTEL64
+      cl_cpu_options: -QIntel-jcc-erratum
       ffmpeg_extra_options: --disable-fma4
       vc_inc_arch: SSE2
     - favor_arch: AMD64
@@ -55,7 +57,7 @@ install:
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
   # disable /GS (Buffer Security Check) to get better performance
   # -Zc:inline is disabled when -GL is on
-  - set cl_options=-MP -Oi -arch:%vc_inc_arch% -Gw -Gy -GL -GS- -Qspectre- -favor:%favor_arch% -Zc:__cplusplus
+  - set cl_options=-MP -Oi -arch:%vc_inc_arch% -Gw -Gy -GL -GS- -Qspectre- -favor:%favor_arch% -Zc:__cplusplus %cl_cpu_options%
   #only works outside development environment
   - set _LINK_=-LTCG
 #  - set CL=/arch:AVX2
