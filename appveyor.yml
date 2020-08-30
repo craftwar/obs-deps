@@ -43,10 +43,17 @@ install:
 #  - C:\msys64\usr\bin\pacman -Su --noconfirm
 #  - C:\msys64\usr\bin\pacman -S --noconfirm mingw-w64-x86_64-nasm
 #  - C:\msys64\usr\bin\pacman -S --noconfirm mingw-w64-x86_64-nasm git make pkg-config #mingw-w64-x86_64-zlib zlib mingw-w64-x86_64-pkg-config
+#  - C:\msys64\usr\bin\pacman -S --noconfirm mingw-w64-x86_64-nasm pkg-config #mingw-w64-x86_64-zlib zlib mingw-w64-x86_64-pkg-config
   - C:\msys64\usr\bin\pacman -Q
   - git submodule update --init --recursive --remote
   - git clone https://github.com/xiph/rnnoise
   - cmd
+  - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+  - C:\msys64\msys2_shell.cmd -mingw64
+  - cd /c/projects/$APPVEYOR_PROJECT_NAME
+  - ./autogen
+  - CC=clang ./configure --disable-examples --disable-doc #compile error
+  
 
   - C:\msys64\usr\bin\bash.exe -lc "cd /c/projects/$APPVEYOR_PROJECT_NAME/ffmpeg; git checkout `git tag --list 'n*' | sed -r '/.+-dev/d' | tail -1`"
 #  - call script\update_submodules.cmd
