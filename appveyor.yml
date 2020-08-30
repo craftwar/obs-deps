@@ -26,7 +26,7 @@ matrix:
   fast_finish: true
 
 init:
-  - ps: if (0) { iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1')) } #rdp debug
+  - ps: if (1) { iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1')) } #rdp debug
 install:
 #  - mklink /d C:\msys64 C:\tools\msys64
 # TODO, remove this when appveyor is ready
@@ -42,9 +42,11 @@ install:
   - C:\msys64\usr\bin\pacman -Syuu --needed --noconfirm
 #  - C:\msys64\usr\bin\pacman -Su --noconfirm
 #  - C:\msys64\usr\bin\pacman -S --noconfirm mingw-w64-x86_64-nasm
-  - C:\msys64\usr\bin\pacman -S --noconfirm mingw-w64-x86_64-nasm git make pkg-config #mingw-w64-x86_64-zlib zlib mingw-w64-x86_64-pkg-config
+#  - C:\msys64\usr\bin\pacman -S --noconfirm mingw-w64-x86_64-nasm git make pkg-config #mingw-w64-x86_64-zlib zlib mingw-w64-x86_64-pkg-config
   - C:\msys64\usr\bin\pacman -Q
   - git submodule update --init --recursive --remote
+  - git clone https://github.com/xiph/rnnoise
+  - cmd
 
   - C:\msys64\usr\bin\bash.exe -lc "cd /c/projects/$APPVEYOR_PROJECT_NAME/ffmpeg; git checkout `git tag --list 'n*' | sed -r '/.+-dev/d' | tail -1`"
 #  - call script\update_submodules.cmd
