@@ -21,5 +21,5 @@
 [submodule "ffnvcodec"]
 	path = ffnvcodec
 	url = https://git.videolan.org/git/ffmpeg/nv-codec-headers.git
-	branch = sdk/9.0
+	branch = sdk/10.0
 	ignore = all
