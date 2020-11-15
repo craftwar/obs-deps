@@ -58,7 +58,9 @@ install:
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
   # disable /GS (Buffer Security Check) to get better performance
   # -Zc:inline is disabled when -GL is on
-  - set cl_options=-MP -Oi -arch:%vc_inc_arch% -Gw -Gy -GL -GS- -Qspectre- -favor:%favor_arch% -Zc:__cplusplus -std:c17 %cl_cpu_options%
+  # delay until newer windows sdk is released (c17 is not supported yet)
+  #- set cl_options=-MP -Oi -arch:%vc_inc_arch% -Gw -Gy -GL -GS- -Qspectre- -favor:%favor_arch% -Zc:__cplusplus -std:c17 %cl_cpu_options%
+  - set cl_options=-MP -Oi -arch:%vc_inc_arch% -Gw -Gy -GL -GS- -Qspectre- -favor:%favor_arch% -Zc:__cplusplus %cl_cpu_options%
   #only works outside development environment
   - set _LINK_=-LTCG
 #  - set CL=/arch:AVX2
@@ -66,7 +68,7 @@ install:
   - cd zlib
 # change dll name from zlib1.dll to zlib.dll (same as Jim's OBS)
   - C:\msys64\usr\bin\sed.exe -i 's/1.dll/.dll/' CMakeLists.txt
-  - cmake -E env CFLAGS="%cl_options%" CXXFLAGS="%cl_options%" LDFLAGS="-LTCG" cmake . -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="%pkg_prefix_win%" -DWITH_NATIVE_INSTRUCTIONS=true -DZLIB_COMPAT=true -DBUILD_SHARED_LIBS=true -DZLIB_ENABLE_TESTS=false
+  - cmake -E env CFLAGS="%cl_options%" CXXFLAGS="%cl_options%" LDFLAGS="-LTCG" cmake . -G "Visual Studio 16 2019" -A x64 -DCMAKE_SYSTEM_VERSION=10.0 -DCMAKE_INSTALL_PREFIX="%pkg_prefix_win%" -DWITH_NATIVE_INSTRUCTIONS=true -DZLIB_COMPAT=true -DBUILD_SHARED_LIBS=true -DZLIB_ENABLE_TESTS=false
   - call msbuild /m /p:Configuration=Release zlib.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 #  - cmd
   - copy "%APPVEYOR_BUILD_FOLDER%\zlib\Release\zlib.lib" "%pkg_prefix_win%\lib\zlib.lib"
