@@ -1,0 +1,8 @@
+in OBS root directory
+in bash (Git bash or whatever)
+$ find -iname q*.dll > Qtdll_list.txt
+replace directory seperator in Qtdll_list.txt
+
+copy PackQt.cmd Qtdll_list.txt to Qt root directory
+run PackQt.cmd
+extract packed OBS Qt dep file to OBS folder
