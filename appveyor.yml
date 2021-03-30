@@ -43,7 +43,9 @@ install:
 #  - C:\msys64\usr\bin\pacman -Su --noconfirm
 #  - C:\msys64\usr\bin\pacman -S --noconfirm mingw-w64-x86_64-nasm git make pkg-config #mingw-w64-x86_64-zlib zlib mingw-w64-x86_64-pkg-config
 # depending on what are preinstalled by Appveyor
-  - C:\msys64\usr\bin\pacman -S --noconfirm mingw-w64-x86_64-nasm
+#  - C:\msys64\usr\bin\pacman -S --noconfirm mingw-w64-x86_64-nasm
+# warning: database file for 'ucrt64' does not exist (use '-Sy' to download)
+  - C:\msys64\usr\bin\pacman -Sy --needed --noconfirm mingw-w64-x86_64-nasm
   - C:\msys64\usr\bin\pacman -Q
   - git submodule update --init --recursive --remote
 
