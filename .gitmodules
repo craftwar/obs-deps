@@ -1,7 +1,7 @@
 [submodule "zlib"]
 	path = zlib
 	url = https://github.com/Dead2/zlib-ng.git
-	branch = develop
+	branch = 2.0.x
 	ignore = all
 [submodule "libpng"]
 	path = libpng
