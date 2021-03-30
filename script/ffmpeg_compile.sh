@@ -5,7 +5,7 @@ PKG_CONFIG_PATH="$pkg_prefix_mingw/lib/pkgconfig" ASFLAGS="-O5" \
 	--extra-cflags="-O2 -MP -arch:$vc_inc_arch -Gw -Gy -GS- -Qspectre- -favor:$favor_arch -Zc:__cplusplus -Zc:inline -std:c17 $cl_cpu_options -I$pkg_prefix_win\include" \
 	--extra-cxxflags="-O2 -MP -arch:$vc_inc_arch -Gw -Gy -GL -GS- -Qspectre- -favor:$favor_arch -Zc:__cplusplus -std:c17 $cl_cpu_options -I$pkg_prefix_win\include" \
 	--extra-ldflags="-LTCG -LIBPATH:$pkg_prefix_win\lib" \
-	--toolchain=msvc --enable-gpl --arch=x86_64 --host-os=win64 --target-os=win64 --cpu=i686 \
+	--toolchain=msvc --enable-gpl --enable-version3 --arch=x86_64 --host-os=win64 --target-os=win64 --cpu=i686 \
 	--disable-amd3dnow --disable-amd3dnowext --disable-xop \
 	--enable-libx264 \
 	--enable-zlib --enable-encoder=png \
