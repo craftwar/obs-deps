@@ -10,10 +10,13 @@ PKG_CONFIG_PATH="$pkg_prefix_mingw/lib/pkgconfig" ASFLAGS="-O5" \
 	--enable-libx264 \
 	--enable-zlib --enable-encoder=png \
 	--disable-muxer=mp3 \
+	--disable-filter=scale_cuda \
 	--disable-programs --disable-doc \
 	--disable-xlib --disable-dxva2 \
 	--disable-postproc --disable-debug $ffmpeg_extra_options
 make install
+# disable filter: scale_cuda
+# libavfilter/vf_scale_cuda_bicubic.ptx.c(3601): fatal error C1060: compiler is out of heap space
 # -j make build randomly fail (VS2017 15.9.11, ffmpeg 4.1.3, 2019/4/20)
 #make -j install
 
