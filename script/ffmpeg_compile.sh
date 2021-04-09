@@ -10,10 +10,11 @@ PKG_CONFIG_PATH="$pkg_prefix_mingw/lib/pkgconfig" ASFLAGS="-O5" \
 	--disable-amd3dnow --disable-amd3dnowext --disable-xop \
 	--enable-libx264 \
 	--enable-zlib --enable-encoder=png \
+	--disable-programs --disable-doc \
 	--disable-muxer=mp3 \
 	--disable-filter=scale_cuda \
-	--disable-programs --disable-doc \
 	--disable-xlib --disable-dxva2 \
+	--disable-indev=vfwcap \
 	--disable-postproc --disable-debug $ffmpeg_extra_options
 make install
 # disable filter: scale_cuda
