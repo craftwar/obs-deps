@@ -10,7 +10,7 @@
 	ignore = all
 [submodule "x264"]
 	path = x264
-	url = http://git.videolan.org/git/x264.git
+	url = https://code.videolan.org/videolan/x264.git
 	branch = stable
 	ignore = all
 [submodule "ffmpeg"]
