@@ -35,6 +35,8 @@ install:
 #  - ps: Start-Sleep -s 5  
 #  - cmd
   - call script\set_variable.cmd
+# prevent "The input line is too long." https://github.com/appveyor/ci/issues/1147
+  - set backupPath=%Path%
   - mkdir "%pkg_prefix_win%\bin\" "%pkg_prefix_win%\include\" "%pkg_prefix_win%\lib\pkgconfig"
   - mkdir "%pkg_prefix%\win32\bin\" "%pkg_prefix%\win32\include\" "%pkg_prefix%\win32\lib\pkgconfig"
 
@@ -59,6 +61,7 @@ install:
 
 #  - cmd
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+  # - '"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"'
   # disable /GS (Buffer Security Check) to get better performance
   # -Zc:inline is disabled when -GL is on
   # delay until newer windows sdk is released (c17 is not supported yet)
@@ -98,13 +101,21 @@ install:
   - nmake /E CFLAGS="%cl_options% -DDETOUR_DEBUG=0 -DWIN32_LEAN_AND_MEAN"
   - copy "%APPVEYOR_BUILD_FOLDER%\Detours\src\detours.h" "%pkg_prefix_win%\include\"
   - copy "%APPVEYOR_BUILD_FOLDER%\Detours\lib.X64\detours.lib" "%pkg_prefix_win%\bin\"
+  - nmake clean
 # 32bit
+  - set Path=%backupPath%
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars32.bat"
+  # - set __VCVARSALL_TARGET_ARCH=x86
+  # - set __VCVARSALL_HOST_ARCH=x86
   - nmake /E CFLAGS="%cl_options% -DDETOUR_DEBUG=0 -DWIN32_LEAN_AND_MEAN"
   - copy "%APPVEYOR_BUILD_FOLDER%\Detours\src\detours.h" "%pkg_prefix%\win32\include\"
   - copy "%APPVEYOR_BUILD_FOLDER%\Detours\lib.X86\detours.lib" "%pkg_prefix%\win32\bin\"
+  - set Path=%backupPath%
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
-  - cd ..
+  # - set __VCVARSALL_TARGET_ARCH=x64
+  # - set __VCVARSALL_HOST_ARCH=x64
+  - echo "%APPVEYOR_BUILD_FOLDER%"
+  - cd "%APPVEYOR_BUILD_FOLDER%"
 
 #unistd.h. This gets erroneously included when building FFmpeg (msvc)
 # tell ffmpeg no this file (-DHAVE_UNISTD_H=0), not working...
