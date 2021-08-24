@@ -92,6 +92,11 @@ install:
   - cmake -E env CFLAGS="%cl_options%" CXXFLAGS="%cl_options%" PNG_INTEL_SSE="yes" cmake . -G "Visual Studio 16 2019" -A x64 -DCMAKE_STATIC_LINKER_FLAGS_INIT=/LTCG -DCMAKE_INSTALL_PREFIX=%pkg_prefix_win% -DPNG_TESTS=off -DPNG_SHARED=off
 #  - cmd
   - call msbuild /m /p:Configuration=Release INSTALL.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+# Detours (can be installed via vcpkg also but no customized optimization flags)
+  - cd "%APPVEYOR_BUILD_FOLDER%\Detours\src"
+  - nmake /E CFLAGS="%cl_options% -DDETOUR_DEBUG=0 -DWIN32_LEAN_AND_MEAN"
+  - copy "%APPVEYOR_BUILD_FOLDER%\Detours\src\detours.h" "%pkg_prefix_win%\include\"
+  - copy "%APPVEYOR_BUILD_FOLDER%\Detours\lib.X64\detours.lib" "%pkg_prefix_win%\bin\"
   - cd ..
 
 #unistd.h. This gets erroneously included when building FFmpeg (msvc)
