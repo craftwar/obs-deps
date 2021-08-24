@@ -36,6 +36,7 @@ install:
 #  - cmd
   - call script\set_variable.cmd
   - mkdir "%pkg_prefix_win%\bin\" "%pkg_prefix_win%\include\" "%pkg_prefix_win%\lib\pkgconfig"
+  - mkdir "%pkg_prefix%\win32\bin\" "%pkg_prefix%\win32\include\" "%pkg_prefix%\win32\lib\pkgconfig"
 
   - set MSYS2_PATH_TYPE=inherit
   - set MSYSTEM=MINGW64
@@ -97,6 +98,12 @@ install:
   - nmake /E CFLAGS="%cl_options% -DDETOUR_DEBUG=0 -DWIN32_LEAN_AND_MEAN"
   - copy "%APPVEYOR_BUILD_FOLDER%\Detours\src\detours.h" "%pkg_prefix_win%\include\"
   - copy "%APPVEYOR_BUILD_FOLDER%\Detours\lib.X64\detours.lib" "%pkg_prefix_win%\bin\"
+# 32bit
+  - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars32.bat"
+  - nmake /E CFLAGS="%cl_options% -DDETOUR_DEBUG=0 -DWIN32_LEAN_AND_MEAN"
+  - copy "%APPVEYOR_BUILD_FOLDER%\Detours\src\detours.h" "%pkg_prefix%\win32\include\"
+  - copy "%APPVEYOR_BUILD_FOLDER%\Detours\lib.X86\detours.lib" "%pkg_prefix%\win32\bin\"
+  - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
   - cd ..
 
 #unistd.h. This gets erroneously included when building FFmpeg (msvc)
