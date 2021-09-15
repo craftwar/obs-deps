@@ -34,6 +34,10 @@ install:
 #  - ps: Restart-Computer
 #  - ps: Start-Sleep -s 5  
 #  - cmd
+
+# install until CI update
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/craftwar/CI_test/master/script/install_winsdk.ps1')) #install windows sdk
+
   - call script\set_variable.cmd
 # prevent "The input line is too long." https://github.com/appveyor/ci/issues/1147
   - set backupPath=%Path%
@@ -65,8 +69,8 @@ install:
   # disable /GS (Buffer Security Check) to get better performance
   # -Zc:inline is disabled when -GL is on
   # delay until newer windows sdk is released (c17 is not supported yet)
-  #- set cl_options=-MP -Oi -arch:%vc_inc_arch% -Gw -Gy -GL -GS- -Qspectre- -favor:%favor_arch% -Zc:__cplusplus -std:c17 %cl_cpu_options%
-  - set cl_options=-MP -Oi -arch:%vc_inc_arch% -Gw -Gy -GL -GS- -Qspectre- -favor:%favor_arch% -Zc:__cplusplus %cl_cpu_options%
+  - set cl_options=-MP -Oi -arch:%vc_inc_arch% -Gw -Gy -GL -GS- -Qspectre- -favor:%favor_arch% -Zc:__cplusplus -std:c17 %cl_cpu_options%
+  # - set cl_options=-MP -Oi -arch:%vc_inc_arch% -Gw -Gy -GL -GS- -Qspectre- -favor:%favor_arch% -Zc:__cplusplus %cl_cpu_options%
   #only works outside development environment
   - set _LINK_=-LTCG
 #  - set CL=/arch:AVX2
