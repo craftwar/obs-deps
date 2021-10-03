@@ -39,7 +39,7 @@ install:
 #  - cmd
 
 # install until CI update
-  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/craftwar/CI_test/master/script/install_winsdk.ps1')) #install windows sdk
+#  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/craftwar/CI_test/master/script/install_winsdk.ps1')) #install windows sdk
 
   - call script\set_variable.cmd
 # prevent "The input line is too long." https://github.com/appveyor/ci/issues/1147
