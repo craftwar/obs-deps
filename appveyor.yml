@@ -1,6 +1,6 @@
 version: '{build}'
 skip_tags: true
-image: Visual Studio 2019
+image: Visual Studio 2022
 #need set environment variable or it's not working in cache
 #clone_script:
 #  - if not exist %APPVEYOR_BUILD_FOLDER% (git clone -q --branch=%APPVEYOR_REPO_BRANCH% https://github.com/craftwar/obs-deps.git)
@@ -38,7 +38,7 @@ install:
 #  - ps: Start-Sleep -s 5  
 #  - cmd
 
-# install until CI update
+# workaround, install until CI update
 #  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/craftwar/CI_test/master/script/install_winsdk.ps1')) #install windows sdk
 
   - call script\set_variable.cmd
@@ -67,7 +67,7 @@ install:
 
 
 #  - cmd
-  - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+  - call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
   # - '"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"'
   # disable /GS (Buffer Security Check) to get better performance
   # -Zc:inline is disabled when -GL is on
@@ -81,7 +81,7 @@ install:
   - cd zlib
 # change dll name from zlib1.dll to zlib.dll (same as Jim's OBS)
   - C:\msys64\usr\bin\sed.exe -i 's/1.dll/.dll/' CMakeLists.txt
-  - cmake -E env CFLAGS="%cl_options%" CXXFLAGS="%cl_options%" LDFLAGS="-LTCG" cmake . -G "Visual Studio 16 2019" -A x64 -DCMAKE_SYSTEM_VERSION=%CMAKE_SYSTEM_VERSION% -DCMAKE_INSTALL_PREFIX="%pkg_prefix_win%" -DWITH_NATIVE_INSTRUCTIONS=true -DZLIB_COMPAT=true -DBUILD_SHARED_LIBS=true -DZLIB_ENABLE_TESTS=false
+  - cmake -E env CFLAGS="%cl_options%" CXXFLAGS="%cl_options%" LDFLAGS="-LTCG" cmake . -G "Visual Studio 17 2022" -A x64 -DCMAKE_SYSTEM_VERSION=%CMAKE_SYSTEM_VERSION% -DCMAKE_INSTALL_PREFIX="%pkg_prefix_win%" -DWITH_NATIVE_INSTRUCTIONS=true -DZLIB_COMPAT=true -DBUILD_SHARED_LIBS=true -DZLIB_ENABLE_TESTS=false
   - call msbuild /m /p:Configuration=Release zlib.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 #  - cmd
   - copy "%APPVEYOR_BUILD_FOLDER%\zlib\Release\zlib.lib" "%pkg_prefix_win%\lib\zlib.lib"
@@ -101,7 +101,7 @@ install:
   - set CPPFLAGS=-I%ZLIBINC%
   - set LDFLAGS=-LIBPATH:%ZLIBLIB% -LTCG
 #  - set LD_LIBRARY_PATH=%ZLIBLIB%:%LD_LIBRARY_PATH%
-  - cmake -E env CFLAGS="%cl_options%" CXXFLAGS="%cl_options%" PNG_INTEL_SSE="yes" cmake . -G "Visual Studio 16 2019" -A x64 -DCMAKE_SYSTEM_VERSION=%CMAKE_SYSTEM_VERSION% -DCMAKE_STATIC_LINKER_FLAGS_INIT=/LTCG -DCMAKE_INSTALL_PREFIX=%pkg_prefix_win% -DPNG_TESTS=off -DPNG_SHARED=off
+  - cmake -E env CFLAGS="%cl_options%" CXXFLAGS="%cl_options%" PNG_INTEL_SSE="yes" cmake . -G "Visual Studio 17 2022" -A x64 -DCMAKE_SYSTEM_VERSION=%CMAKE_SYSTEM_VERSION% -DCMAKE_STATIC_LINKER_FLAGS_INIT=/LTCG -DCMAKE_INSTALL_PREFIX=%pkg_prefix_win% -DPNG_TESTS=off -DPNG_SHARED=off
 #  - cmd
   - call msbuild /m /p:Configuration=Release INSTALL.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
@@ -113,14 +113,14 @@ install:
   - nmake clean
 # 32bit
   - set Path=%backupPath%
-  - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars32.bat"
+  - call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars32.bat"
   # - set __VCVARSALL_TARGET_ARCH=x86
   # - set __VCVARSALL_HOST_ARCH=x86
   - nmake /E CFLAGS="%cl_options% -DDETOUR_DEBUG=0 -DWIN32_LEAN_AND_MEAN"
   - copy "%APPVEYOR_BUILD_FOLDER%\Detours\src\detours.h" "%pkg_prefix%\win32\include\"
   - copy "%APPVEYOR_BUILD_FOLDER%\Detours\lib.X86\detours.lib" "%pkg_prefix%\win32\bin\"
   - set Path=%backupPath%
-  - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+  - call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
   # - set __VCVARSALL_TARGET_ARCH=x64
   # - set __VCVARSALL_HOST_ARCH=x64
   - echo "%APPVEYOR_BUILD_FOLDER%"
