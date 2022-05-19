@@ -11,6 +11,7 @@ PKG_CONFIG_PATH="$pkg_prefix_mingw/lib/pkgconfig" ASFLAGS="-O5" \
 	--enable-libx264 \
 	--enable-zlib --enable-encoder=png \
 	--disable-programs --disable-doc \
+	--disable-mediafoundation \
 	--disable-muxer=mp3 \
 	--disable-filter=scale_cuda \
 	--disable-xlib --disable-dxva2 \
